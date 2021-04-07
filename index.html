@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<title>Elecciones 2017 - Municipios de Corrientes</title>
+	
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="L.Control.Locate.min.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.ie.min.css"/>
+    <![endif]-->
+
+    <script src="L.Control.Locate.min.js" ></script>
+
+    <script src="leaflet.js"></script>
+ 
+    <link rel="stylesheet" href="leaflet.css" />
+
+    <link rel="stylesheet" href="leaflet.css" /> <!-- we will us e this as the styling script for our webmap-->
+    
+    <link rel="stylesheet" type="text/css" href="own_style.css">
+    <script src="jquery-1.11.1.min.js"></script> <!-- this is the javascript file that does the magic-->
+    <script src="js/Autolinker.min.js"></script>
+    <script src="leaflet.draw.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    
+    <script type="text/javascript" src="exp_Municipios.js"></script>
+    
+
+    <style type="text/css">
+
+    .encabeza {
+            border: 1px solid #96d1f8;
+            background: #65a9d7;
+            background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+            background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+            background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+            background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+            background: -o-linear-gradient(top, #3e779d, #65a9d7);
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            padding: 12px 24px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+            -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+            box-shadow: rgba(0,0,0,1) 0 1px 0;
+            text-shadow: rgba(0,0,0,.4) 0 1px 0;
+            color: white;
+            font-size: 17px;
+            /*font-family: Helvetica, Arial, Sans-Serif;*/
+            text-decoration: none;
+            vertical-align: middle;
+        }
+
+        
+    </style>
+
+
+
+
+
+</head>
+
+<body>
+	
+	<div id="map"></div>
+
+    <div id="botonera">
+            <button id="localizame" class="encabeza">Subsecretaria de Tecnologias - Elecciones 2017 <br />Escrutinio Provisorio </button>
+        </div>
+		
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+        <script src="../leaflet-locatecontrol-gh-pages/src/L.Control.Locate.js" ></script>
+        <script src="script.js"></script>
+
+
+
+    <script>	
+
+    var map = L.map('map', { zoomControl:true }).fitBounds([[-30.8119871275,-61.4804234365],[-27.1458104908,-53.7876901848]]);
+
+    
+    
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    maxZoom: 18
+    }).addTo(map);
+
+
+
+     //   var littleton = L.marker([-27.61, -58.02]).bindPopup('This is Littleton, CO.'),
+    //denver    = L.marker([-27.74, -58.99]).bindPopup('This is Denver, CO.'),
+    //aurora    = L.marker([-28.73, -58.8]).bindPopup('This is Aurora, CO.'),
+    //golden    = L.marker([-28.77, -57.23]).bindPopup('This is Golden, CO.');
+
+
+        //var cities = L.layerGroup([littleton, denver, aurora, golden]);
+
+        //cities.addTo(map);
+
+     
+
+         function getColor(d) {
+    return d == "Parcial"    ? '#FE642E' :
+           d == "Final"      ? '#848484' :
+           //d > 100  ? '#FC4E2A' :
+           //d > 50   ? '#FD8D3C' :
+           //d > 20   ? '#FEB24C' :
+           //d > 10   ? '#FED976' :
+                      '#FFEDA0';
+}
+    function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.yeyo_resul),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+
+}
+
+
+            //function popup(feature, layer) { if (feature.properties && feature.properties.NOMBRE) { layer.bindPopup(feature.properties.NOMBRE); } }
+        
+            // geojson = L.geoJson(exp_municipios, { style: style, onEachFeature: popup }) .addTo(map);
+
+            //L.control.layers(baseMaps, overlayMaps).addTo(map); // aca cuando tengo mas de una capa
+
+
+
+               function highlightFeature(e) {
+        var layer = e.target;
+
+            layer.setStyle({
+            weight: 5,
+            color: '#333',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+        layer.bringToFront();
+        info.update(layer.feature.properties);
+        }
+    }
+
+
+
+        function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+    info.update();
+    }
+
+
+
+        function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+    }
+
+        function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+    }
+
+    geojson = L.geoJson(exp_Municipios, {
+    style: style,
+    onEachFeature: onEachFeature
+    }).addTo(map);
+
+
+        var info = L.control();
+
+    info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
+    this._div.innerHTML = '<h2>Votos Elecciones Octubre 2017</h2>' +  (props ?
+        '<b>' + props.NOMBRE + '</b><br />'
+        + 'Total de Mesas: ' + props.yeyo_totme + '<br />'
+        + 'Mesas Escrutadas: ' + props.yeyo_meses + '<br />'
+        + 'Dato: ' + props.yeyo_resul
+        + '<h3>Gobernador y Vice</h3><br />'
+        + props.yeyo_ali11 +" :" +'<b>' + props.yeyo_tali1 + " Votos" +'</b><br />'
+        + '<br />'
+        + props.yeyo_ali12 +" :" +'<b>' + props.yeyo_tal_1 + " Votos" +'</b><br />'
+               
+        
+        : 'Pase el Mouse sobre el Municipio para ver los resultados');
+    };
+
+    info.addTo(map);
+
+
+    L.control.scale().addTo(map);
+
+
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend');
+        
+    // loop through our density intervals and generate a label with a colored square for each interval
+    
+       div.innerHTML +=
+'<img alt="legend" src="leyenda.png" style="box-shadow: rgba(0,0,0,1) 0 0px 0;" width="127" height="120" />';
+
+return div;
+
+    
+};
+
+legend.addTo(map);
+
+
+	</script>
+
+
+</body>
+</html>
